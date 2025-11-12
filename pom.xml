@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.openmrs.content</groupId>
     <artifactId>microclinicproject-content</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>The Micro Clinic Project Content</name>
     <description>Baseline content for the Micro Clinic Project</description>
@@ -146,9 +146,20 @@
                             is not appended to the final name of the assembled artifact -->
                             <appendAssemblyId>false</appendAssemblyId>
                             <finalName>${project.artifactId}-${project.version}</finalName>
+                            <attach>true</attach>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <skip>false</skip>
+                    <updateReleaseInfo>true</updateReleaseInfo>
+                    <deployAtEnd>true</deployAtEnd>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -279,14 +290,9 @@
     </pluginRepositories>
     <distributionManagement>
         <repository>
-            <id>openmrs-repo-modules</id>
-            <name>OpenMRS Nexus Modules</name>
-            <url>http://mavenrepo.openmrs.org/releases</url>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/The-Micro-Clinic-Project/microclinicproject-content</url>
         </repository>
-        <snapshotRepository>
-            <id>openmrs-repo-snapshots</id>
-            <name>OpenMRS Nexus Snapshots</name>
-            <url>http://mavenrepo.openmrs.org/nexus/content/repositories/snapshots</url>
-        </snapshotRepository>
     </distributionManagement>
 </project>
