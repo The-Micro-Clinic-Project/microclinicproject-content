@@ -277,16 +277,11 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
-    <distributionManagement>
-        <repository>
-            <id>openmrs-repo-modules</id>
-            <name>OpenMRS Nexus Modules</name>
-            <url>http://mavenrepo.openmrs.org/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>openmrs-repo-snapshots</id>
-            <name>OpenMRS Nexus Snapshots</name>
-            <url>http://mavenrepo.openmrs.org/nexus/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
+<distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub Packages</name>
+      <url>https://maven.pkg.github.com/The-Micro-Clinic-Project/The-Micro-Clinic-Project/microclinicproject-content</url>
+    </repository>
+  </distributionManagement>
 </project>
