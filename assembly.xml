@@ -7,17 +7,11 @@
     <includeBaseDirectory>false</includeBaseDirectory>
     <fileSets>
         <fileSet>
-            <directory>${project.build.directory}</directory>
-            <includes>
-                <include>content.properties</include>
-            </includes>
-            <outputDirectory>/</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>${project.basedir}/configuration</directory>
+            <directory>${project.build.directory}/${project.artifactId}-${project.version}</directory>
             <includes>
                 <include>**/*</include>
             </includes>
+            <outputDirectory>/</outputDirectory>
         </fileSet>
     </fileSets>
 </assembly>

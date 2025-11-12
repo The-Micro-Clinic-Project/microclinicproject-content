@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.openmrs.content</groupId>
-    <artifactId>referenceapplication</artifactId>
-    <version>1.5.0-SNAPSHOT</version>
+    <artifactId>microclinicproject-content</artifactId>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
-    <name>Reference Application Content</name>
-    <description>Baseline content for the O3 Reference Application</description>
+    <name>The Micro Clinic Project Content</name>
+    <description>Baseline content for the Micro Clinic Project</description>
     <developers>
         <developer>
             <name>OpenMRS</name>
@@ -14,15 +14,28 @@
         </developer>
     </developers>
     <scm>
-        <connection>scm:git:git@github.com:openmrs/openmrs-content-referenceapplication.git</connection>
-        <developerConnection>scm:git:git@github.com:openmrs/openmrs-content-referenceapplication.git</developerConnection>
-        <url>https://github.com/openmrs/openmrs-content-referenceapplication.git</url>
-      <tag>HEAD</tag>
-  </scm>
+        <connection>scm:git:git@github.com:The-Micro-Clinic-Project/microclinicproject-content.git</connection>
+        <developerConnection>scm:git:git@github.com:The-Micro-Clinic-Project/microclinicproject-content.git</developerConnection>
+        <url>https://github.com/The-Micro-Clinic-Project/microclinicproject-content.git</url>
+      <tag>1.0.0</tag>
+    </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <configuration.dir>${project.basedir}/configuration</configuration.dir>
+        <demo.groupId>org.openmrs.content</demo.groupId>
+        <demo.artifactId>referenceapplication-demo</demo.artifactId>
+        <demo.version>1.6.0</demo.version>
+        <demo.extracted.dir>${project.build.directory}/${demo.artifactId}-${demo.version}</demo.extracted.dir>
+        <merged.configuration.dir>${project.build.directory}/${artifactId}-${version}/configuration</merged.configuration.dir>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>${demo.groupId}</groupId>
+            <artifactId>${demo.artifactId}</artifactId>
+            <version>${demo.version}</version>
+            <type>zip</type>
+        </dependency>
+    </dependencies>
     <build>
         <plugins>
             <plugin>
@@ -40,18 +53,78 @@
                             <sourceFile>${project.basedir}/content.properties</sourceFile>
                         </configuration>
                     </execution>
-                    <!-- Commented out for now
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.6.1</version>
+                <executions>
                     <execution>
-                        <id>validate-configurations</id>
-                        <phase>verify</phase>
+                        <id>Unpack Demo Content</id>
+                        <phase>generate-resources</phase>
                         <goals>
-                            <goal>validate-configurations</goal>
+                        <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <sourceDir>${configuration.dir}/backend_configuration</sourceDir>
+                        <excludeTransitive>true</excludeTransitive>
+                        <outputDirectory>${demo.extracted.dir}</outputDirectory>
+                        <includeArtifactIds>${demo.artifactId}</includeArtifactIds>
                         </configuration>
                     </execution>
-                    -->
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                <execution>
+                    <id>Copy Demo Content Files</id>
+                    <phase>process-resources</phase>
+                    <goals>
+                    <goal>copy-resources</goal>
+                    </goals>
+                    <configuration>
+                    <outputDirectory>
+                        ${merged.configuration.dir}/configuration
+                    </outputDirectory>
+                    <overwrite>true</overwrite>
+                    <resources>
+                        <resource>
+                        <directory>${demo.extracted.dir}/configuration</directory>
+                        <excludes>
+                            <exclude>**/locations-core_demo.csv</exclude>
+                        </excludes>
+                        </resource>
+                        
+                    </resources>
+                    </configuration>
+                </execution>
+                <execution>
+                    <!-- Override with local configuration files-->
+                    <id>Copy local resources</id>
+                    <phase>process-resources</phase>
+                    <goals>
+                    <goal>copy-resources</goal>
+                    </goals>
+                    <configuration>
+                    <outputDirectory>
+                        ${merged.configuration.dir}
+                    </outputDirectory>
+                    <overwrite>true</overwrite>
+                    <resources>
+                        <resource>
+                        <directory>${project.basedir}</directory>
+                        <includes>
+                            <include>configuration/**/*</include>
+                            <include>content.properties</include>
+                        </includes>
+                        </resource>
+                    </resources>
+                    </configuration>
+                </execution>
+                
                 </executions>
             </plugin>
             <plugin>
@@ -145,24 +218,41 @@
     </build>
     <repositories>
         <repository>
-            <id>openmrs-repo</id>
-            <name>OpenMRS Public Repository</name>
-            <url>https://mavenrepo.openmrs.org/public</url>
+            <id>openmrs-repo-releases</id>
+            <name>OpenMRS Release Repository</name>
+            <url>https://openmrs.jfrog.io/artifactory/releases</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
         </repository>
         <repository>
-            <id>openmrs-snapshots</id>
-            <name>OpenMRS Snapshot Repository</name>
+            <id>openmrs-repo</id>
+            <name>OpenMRS Nexus Repository</name>
+            <url>https://mavenrepo.openmrs.org/public</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>openmrs-repo-snapshots</id>
+            <name>OpenMRS Snapshots Repository</name>
             <url>https://mavenrepo.openmrs.org/snapshots</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
         </repository>
         <repository>
             <id>central</id>
-            <name>Maven Repository Switchboard</name>
+            <name>Maven Central Repository</name>
             <url>https://repo1.maven.org/maven2</url>
         </repository>
     </repositories>
